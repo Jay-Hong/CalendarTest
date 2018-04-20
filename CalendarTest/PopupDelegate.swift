@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol CalendarDelegate {
-    func calendarYearMonth(value: String)
+protocol PopupDelegate {
+    func moveYearMonth(year: Int, month: Int)
 }

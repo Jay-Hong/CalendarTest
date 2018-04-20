@@ -4,7 +4,7 @@ import UIKit
 class CalendarViewController: UIViewController, UICollectionViewDataSource {
     
 //    var daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    var delegate: CalendarDelegate?
+//    var delegate: CalendarDelegate?
     
     // 전달인자
     var date = Date()
@@ -59,7 +59,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("\(year)년 \(month)월 \(indexPath.row + 1 - firstDayPosition)Cell is selected")
-        delegate?.calendarYearMonth(value: "\(year)년 \(month)월")
+//        delegate?.calendarYearMonth(value: "\(year)년 \(month)월")
     }
     
 }

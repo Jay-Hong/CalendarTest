@@ -4,6 +4,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     
     @IBOutlet weak var mainYearMonthButton: UIButton!
     @IBOutlet weak var pageCalendarView: UIView!
+    @IBOutlet weak var memoLabel: UILabel!
     
 //    var currentDate = Date()
 //    var strYearMonth = String()
@@ -12,17 +13,24 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
 //    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
     @IBAction func touchYearMonthButtonAction(_ sender: Any) {
-        
+
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeFirstMainScreen()
+        makeFirstMainScreen(today)
         
     }
     
-    func makeFirstMainScreen() {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toYearMonthPopUpViewControllerSegue" {
+            let popup = segue.destination as! YearMonthPopUpViewController
+            popup.delegate = self
+        }
+    }
+    
+    func makeFirstMainScreen(_ date: Date) {
         // PageViewController pageCalendarView 크기에 맞춰 등록해 주기
         let pageViewController = self.storyboard?.instantiateViewController(withIdentifier: "pageViewController") as! UIPageViewController
         pageViewController.view.frame = pageCalendarView.bounds
@@ -33,12 +41,12 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         
         
         // 첫 pageViewController 화면 출력하기
-        let firstViewController = createCalendarViewController(today)
+        let firstViewController = createCalendarViewController(date)
         pageViewController.setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
         
-        mainYearMonthButton.setTitle("\(toYear)년 \(toMonth)월", for: .normal)
-//        mainYearMonthButton.titleLabel?.text = "\(toYear)년 \(toMonth)월"
-//        mainYearMonthLabel.text = "\(toYear)년 \(toMonth)월"
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
     }
     
     func createCalendarViewController(_ date: Date) -> CalendarViewController {
@@ -66,7 +74,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         var month = calendar.component(.month, from: currentDate)
         let day = 1
         
-//        mainYearMonthLabel.text = "\(year)년 \(month)월"
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         
         switch month {
@@ -89,7 +96,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         var month = calendar.component(.month, from: currentDate)
         let day = 1
         
-//        mainYearMonthLabel.text = "\(year)년 \(month)월"
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         
         switch month {
@@ -112,11 +118,12 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     
 }
 
-extension MainViewController: CalendarDelegate {
-    func calendarYearMonth(value: String) {
-//        mainYearMonthLabel.text = value
+extension MainViewController: PopupDelegate {
+    func moveYearMonth(year: Int, month: Int) {
+        memoLabel.text = "\(year)년 \(month)월 선택 됨"
+        let date = createDate(year, month, 1)
+        makeFirstMainScreen(date)
     }
-    
 }
 
 
