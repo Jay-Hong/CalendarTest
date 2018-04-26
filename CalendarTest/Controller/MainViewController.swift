@@ -6,20 +6,18 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     @IBOutlet weak var pageCalendarView: UIView!
     @IBOutlet weak var memoLabel: UILabel!
     
+    var pageVC = UIPageViewController()
 //    var currentDate = Date()
 //    var strYearMonth = String()
 //    var monthlyUnitOfWork = Float()
 //    var itemArray = [Item]()
 //    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    
-    @IBAction func touchYearMonthButtonAction(_ sender: Any) {
 
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeFirstMainScreen(today)
+        makeFirstMainScreen()
         
     }
     
@@ -30,23 +28,18 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         }
     }
     
-    func makeFirstMainScreen(_ date: Date) {
-        // PageViewController pageCalendarView 크기에 맞춰 등록해 주기
-        let pageViewController = self.storyboard?.instantiateViewController(withIdentifier: "pageViewController") as! UIPageViewController
-        pageViewController.view.frame = pageCalendarView.bounds
-        addChildViewController(pageViewController)
-        pageCalendarView.addSubview(pageViewController.view)
-        pageViewController.didMove(toParentViewController: self)
-        pageViewController.dataSource = self
-        
+    func makeFirstMainScreen() {
+        pageVC = self.storyboard?.instantiateViewController(withIdentifier: "pageViewController") as! UIPageViewController
+        pageVC.view.frame = pageCalendarView.bounds
+        addChildViewController(pageVC)
+        pageCalendarView.addSubview(pageVC.view)
+        pageVC.didMove(toParentViewController: self)
+        pageVC.dataSource = self
         
         // 첫 pageViewController 화면 출력하기
-        let firstViewController = createCalendarViewController(date)
-        pageViewController.setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
-        
-        let year = calendar.component(.year, from: date)
-        let month = calendar.component(.month, from: date)
-        mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
+        let firstViewController = createCalendarViewController(today)
+        pageVC.setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
+        mainYearMonthButton.setTitle("\(toYear)년 \(toMonth)월", for: .normal)
     }
     
     func createCalendarViewController(_ date: Date) -> CalendarViewController {
@@ -63,7 +56,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         dateComponents.hour = 12
         dateComponents.minute = 30
         
-        let userCalendar = Calendar.current // user calendar
+        let userCalendar = Calendar.current
         return userCalendar.date(from: dateComponents) ?? Date()
     }
     
@@ -120,9 +113,11 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
 
 extension MainViewController: PopupDelegate {
     func moveYearMonth(year: Int, month: Int) {
-        memoLabel.text = "\(year)년 \(month)월 선택 됨"
         let date = createDate(year, month, 1)
-        makeFirstMainScreen(date)
+        let selectedVC = createCalendarViewController(date)
+        pageVC.setViewControllers([selectedVC], direction: .forward, animated: true, completion: nil)
+        mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
+        memoLabel.text = "\(year)년 \(month)월 선택 됨"
     }
 }
 

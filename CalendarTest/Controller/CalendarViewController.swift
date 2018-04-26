@@ -2,8 +2,7 @@
 import UIKit
 
 class CalendarViewController: UIViewController, UICollectionViewDataSource {
-    
-//    var daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
 //    var delegate: CalendarDelegate?
     
     // 전달인자
@@ -16,13 +15,22 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     var firstDayPosition = Int()
     var numberOfCells = Int()
     
+//    var observer: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+//        observer = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "myName") , object: nil, queue: OperationQueue.main, using: { (notification) in
+//            let yearmonthVC = notification.object as! YearMonthPopUpViewController
+//            self.year = yearmonthVC.selectedYear
+//            self.month = yearmonthVC.selectedMonth
+//
+//        })
+        
         setPosition(date)
         
     }
-    
+
     func setPosition(_ date: Date) {
         year = calendar.component(.year, from: date)
         month = calendar.component(.month, from: date)
@@ -59,12 +67,9 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("\(year)년 \(month)월 \(indexPath.row + 1 - firstDayPosition)Cell is selected")
-//        delegate?.calendarYearMonth(value: "\(year)년 \(month)월")
     }
     
 }
-
-
 
 extension CalendarViewController: UICollectionViewDelegateFlowLayout {
     
