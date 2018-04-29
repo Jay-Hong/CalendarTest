@@ -4,6 +4,7 @@ import UIKit
 class UnitOfWorkPopUpViewController: UIViewController {
 
     @IBOutlet weak var displayNumberLabel: UILabel!
+    var delegate: PopupDelegate?
     
     var strNumber = String()
     
@@ -36,7 +37,7 @@ class UnitOfWorkPopUpViewController: UIViewController {
             strNumber += "0."
         }
         if !strNumber.contains(".") {
-            strNumber += "."
+            accumulator(digit: ".")
         }
         numberDisplay()
         
@@ -50,7 +51,8 @@ class UnitOfWorkPopUpViewController: UIViewController {
     }
     
     
-    @IBAction func saveMemoButtonAction(_ sender: UIButton) {
+    @IBAction func saveUnitOfWorkButtonAction(_ sender: UIButton) {
+        delegate?.saveUnitOfWork(unitOfWork: displayNumberLabel.text!)
         dismiss(animated: true, completion: nil)
     }
     

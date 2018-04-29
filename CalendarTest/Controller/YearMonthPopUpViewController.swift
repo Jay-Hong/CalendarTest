@@ -22,8 +22,6 @@ class YearMonthPopUpViewController: UIViewController {
         selectedMonth = Int(sender.currentTitle!)!
         delegate?.moveYearMonth(year: selectedYear, month: selectedMonth)
         
-//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "myName"), object: CalendarViewController.self )
-        
         dismiss(animated: true, completion: nil)
     }
     

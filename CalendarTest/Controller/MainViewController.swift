@@ -7,10 +7,15 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     @IBOutlet weak var memoLabel: UILabel!
     
     var pageVC = UIPageViewController()
+    
+    var selectedYear = Int()
+    var selectedMonth = Int()
+    var selectedDay = Int()
+    
 //    var currentDate = Date()
-//    var strYearMonth = String()
+    var strYearMonth = String()
 //    var monthlyUnitOfWork = Float()
-//    var itemArray = [Item]()
+    var itemArray = [Item]()
 //    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 
     
@@ -19,13 +24,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         
         makeFirstMainScreen()
         
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toYearMonthPopUpViewControllerSegue" {
-            let popup = segue.destination as! YearMonthPopUpViewController
-            popup.delegate = self
-        }
     }
     
     func makeFirstMainScreen() {
@@ -39,12 +37,29 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         // 첫 pageViewController 화면 출력하기
         let firstViewController = createCalendarViewController(today)
         pageVC.setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
+        
         mainYearMonthButton.setTitle("\(toYear)년 \(toMonth)월", for: .normal)
+        selectYearMonthDay(year: toYear, month: toMonth, day: toDay)
+        strYearMonth = "\(toYear)\(makeTwoDigitString(toMonth))"
+//        loadItems()
+        
+//        print("선택된날짜 : \(toYear)년 \(toMonth)월 \(toDay)일")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toYearMonthPopUpViewControllerSegue" {
+            let popup = segue.destination as! YearMonthPopUpViewController
+            popup.delegate = self
+        } else if segue.identifier == "toUnitOfWorkPopUpViewControllerSegue" {
+            let popup = segue.destination as! UnitOfWorkPopUpViewController
+            popup.delegate = self
+        }
     }
     
     func createCalendarViewController(_ date: Date) -> CalendarViewController {
         let calendarVC = self.storyboard?.instantiateViewController(withIdentifier: "CanlendarViewController") as! CalendarViewController
         calendarVC.date = date
+        calendarVC.delegate = self
         return calendarVC
     }
     
@@ -65,9 +80,17 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         let currentDate = calendarVC.date
         var year = calendar.component(.year, from: currentDate)
         var month = calendar.component(.month, from: currentDate)
-        let day = 1
+//        var day = calendar.component(.day, from: currentDate)
+        calendarVC.calendarCollectionView.cellForItem(at: calendarVC.preIndexPath)?.backgroundColor = UIColor.clear
+        calendarVC.calendarCollectionView.cellForItem(at: calendarVC.firstDayIndexPath)?.backgroundColor = UIColor.lightGray
+        var day = (year == toYear && month == toMonth) ? toDay : 1
         
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
+        selectYearMonthDay(year: year, month: month, day: day)
+        strYearMonth = "\(year)\(makeTwoDigitString(month))"
+//        loadItems()
+        
+//        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
         
         switch month {
         case 12:
@@ -76,9 +99,8 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         default:
             month += 1
         }
-        
+        day = (year == toYear && month == toMonth) ? toDay : 1
         let newDate = createDate(year, month, day)
-        
         return createCalendarViewController(newDate)
     }
     
@@ -87,9 +109,17 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         let currentDate = calendarVC.date
         var year = calendar.component(.year, from: currentDate)
         var month = calendar.component(.month, from: currentDate)
-        let day = 1
+//        var day = calendar.component(.day, from: currentDate)
+        calendarVC.calendarCollectionView.cellForItem(at: calendarVC.preIndexPath)?.backgroundColor = UIColor.clear
+        calendarVC.calendarCollectionView.cellForItem(at: calendarVC.firstDayIndexPath)?.backgroundColor = UIColor.lightGray
+        var day = (year == toYear && month == toMonth) ? toDay : 1
         
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
+        selectYearMonthDay(year: year, month: month, day: day)
+        strYearMonth = "\(year)\(makeTwoDigitString(month))"
+//        loadItems()
+        
+//        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
         
         switch month {
         case 1:
@@ -98,10 +128,32 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         default:
             month -= 1
         }
-
+        day = (year == toYear && month == toMonth) ? toDay : 1
         let newDate = createDate(year, month, day)
-        
         return createCalendarViewController(newDate)
+    }
+    
+    //MARK:  - PList 입출력
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        do {let data = try encoder.encode(itemArray)
+            try data.write(to: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!)
+        } catch {print("Error encoding item array, \(error)")
+        }
+    }
+    
+    func loadItems() {
+        itemArray.removeAll()
+        if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
+            let decoder = PropertyListDecoder()
+            do {itemArray = try decoder.decode([Item].self, from: data)
+            } catch {print("Error decoding item array, \(error)")
+            }
+        }
+    }
+    
+    func makeItemArray() {
+        for _ in 1...daysInMonths[selectedMonth] {itemArray.append(Item())}
     }
     
     // change status bar text color to white
@@ -111,12 +163,71 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     
 }
 
+extension MainViewController: CalendarDelegate {
+    func selectYearMonthDay(year: Int, month: Int, day: Int) {
+        selectedYear = year
+        selectedMonth = month
+        selectedDay = day
+        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
+    }
+}
+
 extension MainViewController: PopupDelegate {
-    func moveYearMonth(year: Int, month: Int) {
-        let date = createDate(year, month, 1)
+    
+    func saveUnitOfWork(unitOfWork: String) {
+        
+        let newItem = Item()
+
+        loadItems()
+        if itemArray.isEmpty {
+            makeItemArray()
+        }
+
+        switch unitOfWork {
+        case "":
+            newItem.strUnitOfWork = ""
+            newItem.numUnitOfWork = 0
+        case "0":
+            newItem.strUnitOfWork = "휴무"
+            newItem.numUnitOfWork = 0
+        default:
+            newItem.strUnitOfWork = unitOfWork
+            newItem.numUnitOfWork = Float(unitOfWork)!
+        }
+        
+        newItem.memo = itemArray[selectedDay-1].memo
+
+        itemArray.remove(at: selectedDay-1)
+        itemArray.insert(newItem, at: selectedDay-1)
+        
+        saveItems()
+        
+        if selectedDay < daysInMonths[selectedMonth] {
+            selectedDay += 1
+        }
+        moveYearMonth(year: selectedYear, month: selectedMonth, day: selectedDay)
+        
+        memoLabel.text = "\(unitOfWork) 공수 입력 됨"
+    }
+    
+    func moveYearMonth(year: Int, month: Int, day: Int) {
+        let date = createDate(year, month, day)
         let selectedVC = createCalendarViewController(date)
-        pageVC.setViewControllers([selectedVC], direction: .forward, animated: true, completion: nil)
+        pageVC.setViewControllers([selectedVC], direction: .forward, animated: false, completion: nil)
+    }
+    
+    func moveYearMonth(year: Int, month: Int) {
+        let day = (year == toYear && month == toMonth) ? toDay : 1
+        let date = createDate(year, month, day)
+        let selectedVC = createCalendarViewController(date)
+        pageVC.setViewControllers([selectedVC], direction: .forward, animated: false, completion: nil)
+        
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
+        selectYearMonthDay(year: year, month: month, day: day)
+        strYearMonth = "\(year)\(makeTwoDigitString(month))"
+//        loadItems()
+        
+//        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
         memoLabel.text = "\(year)년 \(month)월 선택 됨"
     }
 }
