@@ -121,6 +121,10 @@
                                                 <state key="normal" title="메모입력">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="inputMemoButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CH8-yo-z1g"/>
+                                                    <segue destination="Ks7-S3-7N9" kind="presentation" identifier="toMemoPopUpViewControllerSegue" modalPresentationStyle="overCurrentContext" modalTransitionStyle="coverVertical" id="HnS-gZ-Shr"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ae7-rG-5hW">
                                                 <rect key="frame" x="187.5" y="0.0" width="187.5" height="46"/>
@@ -129,6 +133,7 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
+                                                    <action selector="inputUnitOfWorkButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0cV-UD-rGg"/>
                                                     <segue destination="0h9-XF-cy0" kind="presentation" identifier="toUnitOfWorkPopUpViewControllerSegue" id="DCh-7q-X6j"/>
                                                 </connections>
                                             </button>
@@ -393,7 +398,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qlk-KW-qww" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="806" y="-618"/>
+            <point key="canvasLocation" x="806" y="-600"/>
         </scene>
         <!--Unit Of Work Pop Up View Controller-->
         <scene sceneID="Avb-Bl-OWB">
@@ -602,12 +607,85 @@
                         <viewLayoutGuide key="safeArea" id="Qbf-Id-gSa"/>
                     </view>
                     <connections>
+                        <outlet property="displayBackView" destination="TrN-5q-VQn" id="soT-RQ-2mF"/>
                         <outlet property="displayNumberLabel" destination="8Cy-T4-BIg" id="HIY-UK-7yg"/>
+                        <outlet property="n0Button" destination="fuK-GR-dAG" id="gaI-eN-IZt"/>
+                        <outlet property="n1Button" destination="4lE-5P-1Sp" id="1G8-I1-xrp"/>
+                        <outlet property="n2Button" destination="VZL-mE-vKg" id="adR-t4-6Xt"/>
+                        <outlet property="n3Button" destination="BEL-jk-lod" id="NBY-h3-Kid"/>
+                        <outlet property="n4Button" destination="YfD-i6-ytN" id="EXm-LZ-IBp"/>
+                        <outlet property="n5Button" destination="jia-a9-3pB" id="2Lj-kx-KZ3"/>
+                        <outlet property="n6Button" destination="LS2-bv-hpa" id="Tvm-wC-COh"/>
+                        <outlet property="n7Button" destination="qAq-lX-yHc" id="IgB-9b-INs"/>
+                        <outlet property="n8Button" destination="DBl-Z9-8e2" id="Nc7-sZ-ib4"/>
+                        <outlet property="n9Button" destination="Fpq-qj-Qlb" id="1FY-4g-6Ba"/>
+                        <outlet property="saveButton" destination="7Ts-rD-gBe" id="YVz-Gz-FCp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tfs-kB-jj5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="805.60000000000002" y="51.724137931034484"/>
+        </scene>
+        <!--Memo Pop Up View Controller-->
+        <scene sceneID="bag-a5-gzw">
+            <objects>
+                <viewController id="Ks7-S3-7N9" customClass="MemoPopUpViewController" customModule="CalendarTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QVZ-ey-Z6u">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ne-Yl-8x1">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="backgroundButtonAction:" destination="Ks7-S3-7N9" eventType="touchUpInside" id="ods-G3-dwi"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iu3-Gd-ilD">
+                                <rect key="frame" x="51" y="118" width="273" height="236"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="DKD-Wg-hEx">
+                                        <rect key="frame" x="8" y="27" width="257" height="160"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rwT-GY-lm0">
+                                        <rect key="frame" x="8" y="195" width="257" height="33"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="저장">
+                                            <color key="titleColor" red="0.25490196079999999" green="0.29411764709999999" blue="0.82352941180000006" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="saveMemoButtonAction:" destination="Ks7-S3-7N9" eventType="touchUpInside" id="Fa4-gg-dg1"/>
+                                            <action selector="saveUnitOfWorkButtonAction:" destination="0h9-XF-cy0" eventType="touchUpInside" id="4sB-BH-Waf"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="메모" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dvw-In-7t9">
+                                        <rect key="frame" x="95" y="0.0" width="83" height="26"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.25490196079999999" green="0.29411764709999999" blue="0.82352941180000006" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.035136421319796995" green="0.035136421319796995" blue="0.035136421319796995" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="5v9-wX-rQX"/>
+                    </view>
+                    <connections>
+                        <outlet property="memoBackView" destination="Iu3-Gd-ilD" id="mb9-Ws-vLc"/>
+                        <outlet property="memoTextView" destination="DKD-Wg-hEx" id="yQv-Ga-leu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3xu-YN-17y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="24.800000000000001" y="729.98500749625191"/>
         </scene>
         <!--Page View Controller-->
         <scene sceneID="vP3-G5-m2Y">

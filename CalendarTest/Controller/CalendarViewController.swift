@@ -18,12 +18,12 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     var strYearMonth = String()
     
     var monthlyItemArray = [Item]()
+//    var monthlyUnitOfWork = Float()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setPosition(date)
-//        print(dataFilePath)
         
     }
 
@@ -48,7 +48,6 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     }
     
     func loadItems(_ strYearMonth: String) {
-//        monthlyItemArray.removeAll()
         if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
             let decoder = PropertyListDecoder()
             do {monthlyItemArray = try decoder.decode([Item].self, from: data)

@@ -11,18 +11,18 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     var selectedYear = Int()
     var selectedMonth = Int()
     var selectedDay = Int()
-    
-//    var currentDate = Date()
     var strYearMonth = String()
-//    var monthlyUnitOfWork = Float()
     var itemArray = [Item]()
-//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    
+    var memoTemp = ""
+    var unitOfWorkTemp = ""
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         makeFirstMainScreen()
+//        print(dataFilePath)
         
     }
     
@@ -41,8 +41,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         mainYearMonthButton.setTitle("\(toYear)년 \(toMonth)월", for: .normal)
         selectYearMonthDay(year: toYear, month: toMonth, day: toDay)
         strYearMonth = "\(toYear)\(makeTwoDigitString(toMonth))"
-//        loadItems()
-        
 //        print("선택된날짜 : \(toYear)년 \(toMonth)월 \(toDay)일")
     }
     
@@ -53,6 +51,11 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         } else if segue.identifier == "toUnitOfWorkPopUpViewControllerSegue" {
             let popup = segue.destination as! UnitOfWorkPopUpViewController
             popup.delegate = self
+            popup.strNumber = unitOfWorkTemp
+        } else if segue.identifier == "toMemoPopUpViewControllerSegue" {
+            let popup = segue.destination as! MemoPopUpViewController
+            popup.delegate = self
+            popup.memo = memoTemp
         }
     }
     
@@ -88,8 +91,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         selectYearMonthDay(year: year, month: month, day: day)
         strYearMonth = "\(year)\(makeTwoDigitString(month))"
-//        loadItems()
-        
 //        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
         
         switch month {
@@ -117,7 +118,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         selectYearMonthDay(year: year, month: month, day: day)
         strYearMonth = "\(year)\(makeTwoDigitString(month))"
-//        loadItems()
         
 //        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
         
@@ -132,6 +132,9 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         let newDate = createDate(year, month, day)
         return createCalendarViewController(newDate)
     }
+    
+    
+    
     
     //MARK:  - PList 입출력
     func saveItems() {
@@ -161,29 +164,67 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
         return .lightContent
     }
     
+    @IBAction func inputUnitOfWorkButtonAction(_ sender: Any) {
+        loadItems()
+        if !itemArray.isEmpty {
+            let temp = itemArray[selectedDay-1].numUnitOfWork
+            print(temp)
+            unitOfWorkTemp = String(itemArray[selectedDay-1].numUnitOfWork)
+            print(unitOfWorkTemp)
+        }
+    }
+    
+    @IBAction func inputMemoButtonAction(_ sender: Any) {
+        loadItems()
+        memoTemp = itemArray[selectedDay-1].memo
+        print(memoTemp)
+    }
+    
 }
 
-extension MainViewController: CalendarDelegate {
-    func selectYearMonthDay(year: Int, month: Int, day: Int) {
-        selectedYear = year
-        selectedMonth = month
-        selectedDay = day
-        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
-    }
-}
+
 
 extension MainViewController: PopupDelegate {
     
-    func saveUnitOfWork(unitOfWork: String) {
+    func saveMemo(memo: String) {
         
         let newItem = Item()
-
-        loadItems()
+//        loadItems()
+        if itemArray.isEmpty {
+            makeItemArray() }
+        
+        newItem.memo = memo
+        newItem.strUnitOfWork = itemArray[selectedDay-1].strUnitOfWork
+        newItem.numUnitOfWork = itemArray[selectedDay-1].numUnitOfWork
+        
+        itemArray.remove(at: selectedDay-1)
+        itemArray.insert(newItem, at: selectedDay-1)
+        
+        saveItems()
+        
+        if selectedDay < daysInMonths[selectedMonth] {
+            selectedDay += 1
+        }
+        moveYearMonth(year: selectedYear, month: selectedMonth, day: selectedDay)
+    }
+    
+    
+    func saveUnitOfWork(unitOfWork: String) {
+        let newItem = Item()
+//        loadItems()
         if itemArray.isEmpty {
             makeItemArray()
         }
-
-        switch unitOfWork {
+        unitOfWorkTemp = unitOfWork
+        
+        if unitOfWorkTemp.contains(".") {
+            while (unitOfWorkTemp.hasSuffix("0")) {
+                unitOfWorkTemp.removeLast() }
+            if unitOfWorkTemp.hasSuffix(".") {
+                unitOfWorkTemp.removeLast() }
+        }
+        
+        switch unitOfWorkTemp {
         case "":
             newItem.strUnitOfWork = ""
             newItem.numUnitOfWork = 0
@@ -191,8 +232,8 @@ extension MainViewController: PopupDelegate {
             newItem.strUnitOfWork = "휴무"
             newItem.numUnitOfWork = 0
         default:
-            newItem.strUnitOfWork = unitOfWork
-            newItem.numUnitOfWork = Float(unitOfWork)!
+            newItem.strUnitOfWork = unitOfWorkTemp
+            newItem.numUnitOfWork = Float(unitOfWorkTemp)!
         }
         
         newItem.memo = itemArray[selectedDay-1].memo
@@ -207,7 +248,7 @@ extension MainViewController: PopupDelegate {
         }
         moveYearMonth(year: selectedYear, month: selectedMonth, day: selectedDay)
         
-        memoLabel.text = "\(unitOfWork) 공수 입력 됨"
+//        memoLabel.text = "\(unitOfWork) 공수 입력 됨"
     }
     
     func moveYearMonth(year: Int, month: Int, day: Int) {
@@ -225,10 +266,17 @@ extension MainViewController: PopupDelegate {
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         selectYearMonthDay(year: year, month: month, day: day)
         strYearMonth = "\(year)\(makeTwoDigitString(month))"
-//        loadItems()
-        
 //        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
-        memoLabel.text = "\(year)년 \(month)월 선택 됨"
+//        memoLabel.text = "\(year)년 \(month)월 선택 됨"
+    }
+}
+
+extension MainViewController: CalendarDelegate {
+    func selectYearMonthDay(year: Int, month: Int, day: Int) {
+        selectedYear = year
+        selectedMonth = month
+        selectedDay = day
+        print("선택된날짜 : \(year)년 \(month)월 \(day)일")
     }
 }
 

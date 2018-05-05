@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6900126E2091E41700DA7768 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6900126D2091E41700DA7768 /* Item.swift */; };
+		69188C1E2097344C00080FA7 /* MemoPopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69188C1D2097344C00080FA7 /* MemoPopUpViewController.swift */; };
 		694A3CB520877990002CA364 /* PopupDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694A3CB420877990002CA364 /* PopupDelegate.swift */; };
 		6959813D2084A4F100727DC7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6959813C2084A4F000727DC7 /* AppDelegate.swift */; };
 		6959813F2084A4F100727DC7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6959813E2084A4F100727DC7 /* MainViewController.swift */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		6900126D2091E41700DA7768 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		69188C1D2097344C00080FA7 /* MemoPopUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoPopUpViewController.swift; sourceTree = "<group>"; };
 		694A3CB420877990002CA364 /* PopupDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupDelegate.swift; sourceTree = "<group>"; };
 		695981392084A4F000727DC7 /* CalendarTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6959813C2084A4F000727DC7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				6959813E2084A4F100727DC7 /* MainViewController.swift */,
+				69188C1D2097344C00080FA7 /* MemoPopUpViewController.swift */,
 				69F53D44208DE5F10006647C /* UnitOfWorkPopUpViewController.swift */,
 				69FE9251208A5F0600A59471 /* YearMonthPopUpViewController.swift */,
 				69598150208505FF00727DC7 /* CalendarViewController.swift */,
@@ -203,6 +206,7 @@
 				694A3CB520877990002CA364 /* PopupDelegate.swift in Sources */,
 				6959813F2084A4F100727DC7 /* MainViewController.swift in Sources */,
 				6959813D2084A4F100727DC7 /* AppDelegate.swift in Sources */,
+				69188C1E2097344C00080FA7 /* MemoPopUpViewController.swift in Sources */,
 				69598151208505FF00727DC7 /* CalendarViewController.swift in Sources */,
 				69B733B920922E4300279038 /* CalendarDelegate.swift in Sources */,
 			);
