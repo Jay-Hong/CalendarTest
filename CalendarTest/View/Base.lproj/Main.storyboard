@@ -96,7 +96,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cv8-3g-klm">
                                 <rect key="frame" x="0.0" y="491" width="375" height="130"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Temp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3FM-H6-nX7">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3FM-H6-nX7">
                                         <rect key="frame" x="0.0" y="95" width="375" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -690,7 +690,7 @@
         <!--Page View Controller-->
         <scene sceneID="vP3-G5-m2Y">
             <objects>
-                <pageViewController storyboardIdentifier="pageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" pageSpacing="2" navigationOrientation="horizontal" spineLocation="none" id="08S-Vl-OBf" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="pageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" pageSpacing="12" navigationOrientation="horizontal" spineLocation="none" id="08S-Vl-OBf" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="96y-XG-bOn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1447" y="30"/>
@@ -729,8 +729,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aGr-dr-0sb">
-                                                    <rect key="frame" x="2" y="41" width="48" height="18"/>
+                                                    <rect key="frame" x="2" y="38" width="48" height="20"/>
                                                     <color key="backgroundColor" red="1" green="0.73024565299999999" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="MyM-T2-WgM"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -746,7 +749,7 @@
                                             </subviews>
                                         </view>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="aGr-dr-0sb" secondAttribute="bottom" constant="1" id="0DQ-0f-LzA"/>
+                                            <constraint firstAttribute="bottom" secondItem="aGr-dr-0sb" secondAttribute="bottom" constant="2" id="0DQ-0f-LzA"/>
                                             <constraint firstItem="aGr-dr-0sb" firstAttribute="leading" secondItem="vlD-Wx-uFU" secondAttribute="leading" constant="2" id="2ys-Gn-c7B"/>
                                             <constraint firstAttribute="trailing" secondItem="t64-9v-WbL" secondAttribute="trailing" constant="2" id="Gb3-qH-JWh"/>
                                             <constraint firstItem="kmj-Fo-ufE" firstAttribute="centerY" secondItem="vlD-Wx-uFU" secondAttribute="centerY" constant="-2" id="H95-e1-vnC"/>
@@ -780,6 +783,7 @@
                     </view>
                     <connections>
                         <outlet property="calendarCollectionView" destination="2gI-f0-qh2" id="phd-5x-Q17"/>
+                        <outlet property="calendarLineView" destination="gCB-nP-SgM" id="2wm-MS-QSE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cXz-Xc-FSh" userLabel="First Responder" sceneMemberID="firstResponder"/>

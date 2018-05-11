@@ -10,9 +10,6 @@ let toDay = calendar.component(.day , from: today)
 let toWeekday = calendar.component(.weekday , from: today)    // 한 주의시작을 월요일로 하려면 이 값에 -1 해준다
 let toMonth = calendar.component(.month , from: today)
 let toYear = calendar.component(.year, from: today)
-//var monthlyUnitOfWork = Float()
-//var itemArray = [Item]()
-//var strYearMonth = ""
 
 func makeTwoDigitString(_ number : Int) -> String {
     switch number {

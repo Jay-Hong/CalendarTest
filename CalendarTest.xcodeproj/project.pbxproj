@@ -95,10 +95,10 @@
 			isa = PBXGroup;
 			children = (
 				6959813E2084A4F100727DC7 /* MainViewController.swift */,
-				69188C1D2097344C00080FA7 /* MemoPopUpViewController.swift */,
-				69F53D44208DE5F10006647C /* UnitOfWorkPopUpViewController.swift */,
-				69FE9251208A5F0600A59471 /* YearMonthPopUpViewController.swift */,
 				69598150208505FF00727DC7 /* CalendarViewController.swift */,
+				69FE9251208A5F0600A59471 /* YearMonthPopUpViewController.swift */,
+				69F53D44208DE5F10006647C /* UnitOfWorkPopUpViewController.swift */,
+				69188C1D2097344C00080FA7 /* MemoPopUpViewController.swift */,
 				6959815420853D2900727DC7 /* Vars.swift */,
 			);
 			path = Controller;

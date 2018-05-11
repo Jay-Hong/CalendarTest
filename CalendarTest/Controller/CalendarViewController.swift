@@ -3,6 +3,7 @@ import UIKit
 
 class CalendarViewController: UIViewController, UICollectionViewDataSource {
 
+    @IBOutlet var calendarLineView: CalendarLineView!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     var delegate: CalendarDelegate?
     
@@ -22,9 +23,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setPosition(date)
-        
     }
 
     func setPosition(_ date: Date) {
@@ -45,15 +44,9 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         firstDayPosition += firstDayPosition < 0 ? 7 : 0
         
         numberOfCells = firstDayPosition + daysInMonths[month]
-    }
-    
-    func loadItems(_ strYearMonth: String) {
-        if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
-            let decoder = PropertyListDecoder()
-            do {monthlyItemArray = try decoder.decode([Item].self, from: data)
-            } catch {print("Error decoding item array, \(error)")
-            }
-        }
+        
+        calendarLineView.setNumberOfCells(numberOfCells)
+        calendarLineView.setNeedsDisplay()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -80,7 +73,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         }
         
         if dayCounter == day {
-            cell.backgroundColor = UIColor.lightGray
+            cell.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
             preIndexPath = indexPath
         }
         
@@ -102,6 +95,22 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
                 } else {    // 공수에 값이 있을경우
                     cell.unitOfWorkLabel.isHidden = false
                     cell.unitOfWorkLabel.text = monthlyItemArray[itemArrayIndex].strUnitOfWork
+                    
+                    let numUnitOfWork = monthlyItemArray[itemArrayIndex].numUnitOfWork
+                    switch numUnitOfWork {
+                    case 0:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.6312795164, green: 0.6869744353, blue: 0.699911484, alpha: 1)
+                    case 0.001 ... 0.999:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.494656867, green: 0.6382678452, blue: 1, alpha: 1)
+                    case 1 ... 1.499:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 1, green: 0.805794555, blue: 0.2924747302, alpha: 1)
+                    case 1.5 ... 1.999:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.8951854988, green: 0.5099442633, blue: 0.8664344656, alpha: 1)
+                    case 2 ... 2.499:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 1, green: 0.5480514099, blue: 0.443981049, alpha: 1)
+                    default:
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.5916005143, green: 0.946005234, blue: 0.3941271998, alpha: 1)
+                    }
                 }
                 if monthlyItemArray[itemArrayIndex].memo == "" {   // 메모가 비었을 경우
                     cell.memoLabel.isHidden = true
@@ -110,44 +119,36 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
                     cell.memoLabel.text = monthlyItemArray[itemArrayIndex].memo
                 }
             }
-
-//            cell.unitOfWorkLabel.text = monthlyItemArray.isEmpty ? "" : monthlyItemArray[indexPath.row - firstDayPosition].strUnitOfWork
-
-//            cell.memoLabel.text = monthlyItemArray.isEmpty ? "" : monthlyItemArray[indexPath.row - firstDayPosition].memo
-
-//            monthlyGongsu += itemArray.isEmpty ? 0 : itemArray[indexPath.row - firstDayPosition].numUnitOfWork
-
-            if (indexPath.row + 1) == (daysInMonths[month] + firstDayPosition) {
-//              monthlyGongsuLabel.text = String(monthlyGongsu)
-            }
-            
-            // 주말 날짜색 설정
-            switch indexPath.row {
+            switch indexPath.row {  // 주말 날짜색 설정
             case 0,7,14,21,28,35,42:
                 if Int(cell.dayLabel.text!)! > 0 {
-                    cell.dayLabel.textColor = UIColor.red
-                }
+                    cell.dayLabel.textColor = UIColor.red }
             case 6,13,20,27,34,41:
                 if Int(cell.dayLabel.text!)! > 0 {
-                    cell.dayLabel.textColor = UIColor.blue
-                }
-            default:
-                break
+                    cell.dayLabel.textColor = UIColor.blue }
+            default: break
             }
         }
-        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let dayCounter = indexPath.row + 1 - firstDayPosition
 //        print("\(year)년 \(month)월 \(dayCounter)일 이 선택 됨")
-//        day = dayCounter
         delegate?.selectYearMonthDay(year: year, month: month, day: dayCounter)
         collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.clear
         collectionView.cellForItem(at: firstDayIndexPath)?.backgroundColor = UIColor.clear
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.lightGray
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
         preIndexPath = indexPath
+    }
+    
+    func loadItems(_ strYearMonth: String) {
+        if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
+            let decoder = PropertyListDecoder()
+            do {monthlyItemArray = try decoder.decode([Item].self, from: data)
+            } catch {print("Error decoding item array, \(error)")
+            }
+        }
     }
     
 }
@@ -156,7 +157,10 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / 7
-        let height = collectionView.frame.height / 6
+        
+        var height = CGFloat()
+        height = numberOfCells > 35 ? (collectionView.frame.height / 6) : (collectionView.frame.height / 5)
+        
         return CGSize(width: width, height: height)
     }
     

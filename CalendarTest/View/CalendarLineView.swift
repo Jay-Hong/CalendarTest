@@ -1,9 +1,11 @@
 
 import UIKit
 
+//var height = CGFloat()
+var numberOfCells = Int()
+
 class CalendarLineView: UIView {
 
-    
     func makeLine(at y: CGFloat, in rect: CGRect) -> UIBezierPath {
 //        precondition((rect.minY...rect.maxY).contains(y))
         let line = UIBezierPath()
@@ -37,9 +39,13 @@ class CalendarLineView: UIView {
         strokePath(line, width: pixelUnit)
     }
     
+    func setNumberOfCells(_ cells: Int) {
+        numberOfCells = cells
+    }
+    
     override func draw(_ rect: CGRect) {
         
-        let height = bounds.size.height / 6
+        let height = numberOfCells > 35 ? (bounds.size.height / 6) : (bounds.size.height / 5)
         
         singlePixelLine(at: 0, in: rect, topBias: false)
         singlePixelLine(at: height * 1, in: rect, topBias: false)
