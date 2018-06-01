@@ -19,7 +19,6 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
     var strYearMonth = String()
     
     var monthlyItemArray = [Item]()
-//    var monthlyUnitOfWork = Float()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +44,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         
         numberOfCells = firstDayPosition + daysInMonths[month]
         
+        //  numberOfCell 에 따른 선높이 바꿔 그려주기
         calendarLineView.setNumberOfCells(numberOfCells)
         calendarLineView.setNeedsDisplay()
     }

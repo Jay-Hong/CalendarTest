@@ -18,7 +18,8 @@ class CalendarLineView: UIView {
         path.lineWidth = width
         
         // Line Color
-        UIColor.lightGray.setStroke()
+//        UIColor.lightGray.setStroke()
+        #colorLiteral(red: 0.7733028017, green: 0.7733028017, blue: 0.7733028017, alpha: 1).setStroke()
         path.stroke()
     }
     
@@ -53,7 +54,7 @@ class CalendarLineView: UIView {
         singlePixelLine(at: height * 3, in: rect, topBias: false)
         singlePixelLine(at: height * 4, in: rect, topBias: false)
         singlePixelLine(at: height * 5, in: rect, topBias: false)
-        singlePixelLine(at: height * 6, in: rect, topBias: true)
+//        singlePixelLine(at: height * 6, in: rect, topBias: true)
         
 //        let width = bounds.size.width
 //        let height = bounds.size.height / 6

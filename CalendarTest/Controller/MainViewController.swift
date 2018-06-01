@@ -1,10 +1,12 @@
 import UIKit
+import GoogleMobileAds
 
-class MainViewController: UIViewController, UIPageViewControllerDataSource{
+class MainViewController: UIViewController, UIPageViewControllerDataSource, GADBannerViewDelegate{
     
     @IBOutlet weak var mainYearMonthButton: UIButton!
     @IBOutlet weak var pageCalendarView: UIView!
     @IBOutlet weak var memoLabel: UILabel!
+    @IBOutlet weak var bannerView: GADBannerView!
     
     var pageVC = UIPageViewController()
     
@@ -21,8 +23,16 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeFirstMainScreen()
 //        print(dataFilePath)
+        
+//        bannerView.adSize = kGADAdSizeSmartBannerPortrait
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        
+        bannerView.delegate = self
+        
+        makeFirstMainScreen()
         
     }
     
