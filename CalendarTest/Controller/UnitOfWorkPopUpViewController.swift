@@ -1,7 +1,8 @@
 
 import UIKit
+import GoogleMobileAds
 
-class UnitOfWorkPopUpViewController: UIViewController {
+class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
 
     @IBOutlet weak var displayBackView: UIView!
     @IBOutlet weak var displayNumberLabel: UILabel!
@@ -18,10 +19,41 @@ class UnitOfWorkPopUpViewController: UIViewController {
     @IBOutlet weak var n9Button: UIButton!
     @IBOutlet weak var n0Button: UIButton!
     
+    @IBOutlet weak var bannerView: GADBannerView!
     
     var delegate: PopupDelegate?
     
     var strNumber = String()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        refineStrNumber()
+        
+        setShadow()
+        
+        setAdMob()
+    }
+    
+    func setAdMob() {
+        bannerView.adSize = kGADAdSizeBanner
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        bannerView.delegate = self
+    }
+    
+    func refineStrNumber() {
+        if strNumber.contains(".") {
+            while (strNumber.hasSuffix("0")) {
+                strNumber.removeLast() }
+            if strNumber.hasSuffix(".") {
+                strNumber.removeLast() }
+        }
+        strNumber = strNumber == "" ? "0" : strNumber
+        numberDisplay()
+    }
     
     func numberDisplay() {
         displayNumberLabel.text = strNumber
@@ -42,7 +74,6 @@ class UnitOfWorkPopUpViewController: UIViewController {
     }
     
     @IBAction func dotButtonAction(_ sender: UIButton) {
-        
         if strNumber.isEmpty{
             strNumber += "0."
         }
@@ -50,7 +81,6 @@ class UnitOfWorkPopUpViewController: UIViewController {
             accumulator(digit: ".")
         }
         numberDisplay()
-        
     }
     
     @IBAction func deleteButtonAction(_ sender: UIButton) {
@@ -70,27 +100,12 @@ class UnitOfWorkPopUpViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func refineStrNumber() {
-        if strNumber.contains(".") {
-            while (strNumber.hasSuffix("0")) {
-                strNumber.removeLast() }
-            if strNumber.hasSuffix(".") {
-                strNumber.removeLast() }
-        }
-        strNumber = strNumber == "" ? "0" : strNumber
-        numberDisplay()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        refineStrNumber()
-        
+    func setShadow() {
         displayBackView.layer.cornerRadius = 10
         displayBackView.layer.masksToBounds = true
         
         saveButton.layer.cornerRadius = 5
-//        saveButton.layer.masksToBounds = true
+        //        saveButton.layer.masksToBounds = true
         saveButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7).cgColor
         saveButton.layer.shadowOffset = CGSize(width: 0, height: 2)
         saveButton.layer.shadowOpacity = 1.0
@@ -152,17 +167,16 @@ class UnitOfWorkPopUpViewController: UIViewController {
         n0Button.layer.shadowOpacity = shadowOpacity
         n0Button.layer.shadowRadius = shadowRadius
         
-        
-//        n1Button.layer.masksToBounds = false
-//        n2Button.layer.masksToBounds = true
-//        n3Button.layer.masksToBounds = true
-//        n4Button.layer.masksToBounds = true
-//        n5Button.layer.masksToBounds = true
-//        n6Button.layer.masksToBounds = true
-//        n7Button.layer.masksToBounds = true
-//        n8Button.layer.masksToBounds = true
-//        n9Button.layer.masksToBounds = true
-//        n0Button.layer.masksToBounds = true
+        //        n1Button.layer.masksToBounds = false
+        //        n2Button.layer.masksToBounds = true
+        //        n3Button.layer.masksToBounds = true
+        //        n4Button.layer.masksToBounds = true
+        //        n5Button.layer.masksToBounds = true
+        //        n6Button.layer.masksToBounds = true
+        //        n7Button.layer.masksToBounds = true
+        //        n8Button.layer.masksToBounds = true
+        //        n9Button.layer.masksToBounds = true
+        //        n0Button.layer.masksToBounds = true
         
         var numberButtonCornerRadius = CGFloat()
         numberButtonCornerRadius = 5
@@ -178,6 +192,5 @@ class UnitOfWorkPopUpViewController: UIViewController {
         n9Button.layer.cornerRadius = numberButtonCornerRadius
         n0Button.layer.cornerRadius = numberButtonCornerRadius
     }
-    
     
 }

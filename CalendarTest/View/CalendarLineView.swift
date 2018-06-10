@@ -53,8 +53,8 @@ class CalendarLineView: UIView {
         singlePixelLine(at: height * 2, in: rect, topBias: false)
         singlePixelLine(at: height * 3, in: rect, topBias: false)
         singlePixelLine(at: height * 4, in: rect, topBias: false)
-        singlePixelLine(at: height * 5, in: rect, topBias: false)
-//        singlePixelLine(at: height * 6, in: rect, topBias: true)
+        singlePixelLine(at: height * 5, in: rect, topBias: true)
+        singlePixelLine(at: height * 6, in: rect, topBias: true)
         
 //        let width = bounds.size.width
 //        let height = bounds.size.height / 6

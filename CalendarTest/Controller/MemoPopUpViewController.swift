@@ -13,9 +13,10 @@ class MemoPopUpViewController: UIViewController {
         super.viewDidLoad()
         
         memoTextView.text = memo
-        
+        memoTextView.becomeFirstResponder()
 
     }
+    
     @IBAction func backgroundButtonAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }

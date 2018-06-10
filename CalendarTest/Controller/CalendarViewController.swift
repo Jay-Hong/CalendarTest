@@ -109,7 +109,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
                     case 2 ... 2.499:
                         cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 1, green: 0.5480514099, blue: 0.443981049, alpha: 1)
                     default:
-                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.5916005143, green: 0.946005234, blue: 0.3941271998, alpha: 1)
+                        cell.unitOfWorkLabel.backgroundColor = #colorLiteral(red: 0.3594583542, green: 0.8026477833, blue: 0.2852157565, alpha: 1)
                     }
                 }
                 if monthlyItemArray[itemArrayIndex].memo == "" {   // 메모가 비었을 경우

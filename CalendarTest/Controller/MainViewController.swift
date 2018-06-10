@@ -6,7 +6,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
     @IBOutlet weak var mainYearMonthButton: UIButton!
     @IBOutlet weak var pageCalendarView: UIView!
     @IBOutlet weak var memoLabel: UILabel!
-    @IBOutlet weak var bannerView: GADBannerView!
+    @IBOutlet weak var dashBoardCollectionView: UICollectionView!
     
     var pageVC = UIPageViewController()
     
@@ -18,25 +18,21 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
     
     var memoTemp = ""
     var unitOfWorkTemp = ""
+    var strMonthlyUnitOfWrk = ""
+    
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        print(dataFilePath)
+        makeCalendarMainScreen()
         
-//        bannerView.adSize = kGADAdSizeSmartBannerPortrait
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        bannerView.rootViewController = self
-        bannerView.load(GADRequest())
+        setDashBoard()
         
-        bannerView.delegate = self
-        
-        makeFirstMainScreen()
-        
+        //  print(dataFilePath)
     }
     
-    func makeFirstMainScreen() {
+    func makeCalendarMainScreen() {
         pageVC = self.storyboard?.instantiateViewController(withIdentifier: "pageViewController") as! UIPageViewController
         pageVC.view.frame = pageCalendarView.bounds
         addChildViewController(pageVC)
@@ -154,7 +150,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         for item in itemArray {
             monthlyUnitOfWork += item.numUnitOfWork
         }
-        var strMonthlyUnitOfWrk = String(monthlyUnitOfWork)
+        strMonthlyUnitOfWrk = String(monthlyUnitOfWork)
         if strMonthlyUnitOfWrk.contains(".") {
             while (strMonthlyUnitOfWrk.hasSuffix("0")) {
                 strMonthlyUnitOfWrk.removeLast() }
@@ -162,6 +158,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
                 strMonthlyUnitOfWrk.removeLast() }
         }
         memoLabel.text = strMonthlyUnitOfWrk
+        dashBoardCollectionView.reloadData()
     }
     
     //MARK:  - PList 입출력
@@ -198,6 +195,8 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         if !itemArray.isEmpty {
             unitOfWorkTemp = String(itemArray[selectedDay-1].numUnitOfWork)
             print(unitOfWorkTemp)
+        } else {
+            unitOfWorkTemp = "0"
         }
     }
     
@@ -313,5 +312,66 @@ extension MainViewController: CalendarDelegate {
     }
 }
 
-
+extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    func setDashBoard() {
+        dashBoardCollectionView.register(UINib.init(nibName: "DashBoardCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "dashIdentififer")
+        
+        let flowLayout = UPCarouselFlowLayout()
+        flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.size.width - 40.0, height: dashBoardCollectionView.frame.size.height - 4)
+        flowLayout.scrollDirection = .horizontal
+        flowLayout.sideItemScale = 0.95
+        flowLayout.sideItemAlpha = 0.5
+        flowLayout.spacingMode = .fixed(spacing: 10)
+        dashBoardCollectionView.collectionViewLayout = flowLayout
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = dashBoardCollectionView.dequeueReusableCell(withReuseIdentifier: "dashIdentififer", for: indexPath) as! DashBoardCollectionViewCell
+        
+        switch indexPath.row {
+            
+        case 0:
+            cell.contentLabel.textAlignment = .center
+            cell.contentLabel.text = "\(strMonthlyUnitOfWrk)"
+            cell.descriptionLabel.text = "\(selectedMonth)월 공수"
+            cell.unitLabel.text = "공수"
+            cell.backView.backgroundColor = #colorLiteral(red: 0, green: 0.7568627451, blue: 0.8431372549, alpha: 1)
+            cell.imgBackView.backgroundColor = #colorLiteral(red: 0, green: 0.662745098, blue: 0.7411764706, alpha: 1)
+            cell.iconImgView.image = #imageLiteral(resourceName: "ic_schedule")
+            
+        case 1:
+            cell.contentLabel.text = "3,800,000"
+            cell.descriptionLabel.text = "\(selectedMonth)월 예상 급여"
+            cell.unitLabel.text = "원"
+            cell.backView.backgroundColor = #colorLiteral(red: 0.9882352941, green: 0, blue: 0.3490196078, alpha: 1)
+            cell.imgBackView.backgroundColor = #colorLiteral(red: 0.8705882353, green: 0, blue: 0.3098039216, alpha: 1)
+            cell.iconImgView.image = #imageLiteral(resourceName: "ic_wallet")
+            
+        case 2:
+            cell.contentLabel.text = "180,000"
+            cell.descriptionLabel.text = "\(selectedMonth)월 단가"
+            cell.unitLabel.text = "원"
+            cell.backView.backgroundColor = #colorLiteral(red: 0.4588235294, green: 0.8039215686, blue: 0.2745098039, alpha: 1)
+            cell.imgBackView.backgroundColor = #colorLiteral(red: 0.4039215686, green: 0.7019607843, blue: 0.2431372549, alpha: 1)
+            cell.iconImgView.image = #imageLiteral(resourceName: "ic_money")
+            
+        default:
+            cell.descriptionLabel.text = "메모"
+            cell.unitLabel.text = ""
+            cell.descriptionLabel.text = ""
+            cell.backView.backgroundColor = #colorLiteral(red: 0.4588235294, green: 0, blue: 0.7254901961, alpha: 1)
+            cell.imgBackView.backgroundColor = #colorLiteral(red: 0.368627451, green: 0, blue: 0.6666666667, alpha: 1)
+            cell.iconImgView.image = #imageLiteral(resourceName: "ic_border_memo")
+        }
+        
+        return cell
+    }
+    
+    
+}
 
