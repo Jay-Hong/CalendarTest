@@ -1,8 +1,7 @@
 
 import UIKit
 
-//var height = CGFloat()
-var numberOfCells = Int()
+var height = CGFloat()
 
 class CalendarLineView: UIView {
 
@@ -18,7 +17,6 @@ class CalendarLineView: UIView {
         path.lineWidth = width
         
         // Line Color
-//        UIColor.lightGray.setStroke()
         #colorLiteral(red: 0.7733028017, green: 0.7733028017, blue: 0.7733028017, alpha: 1).setStroke()
         path.stroke()
     }
@@ -40,13 +38,11 @@ class CalendarLineView: UIView {
         strokePath(line, width: pixelUnit)
     }
     
-    func setNumberOfCells(_ cells: Int) {
-        numberOfCells = cells
+    func setHeight(_ setHi: CGFloat) {
+        height = setHi
     }
     
     override func draw(_ rect: CGRect) {
-        
-        let height = numberOfCells > 35 ? (bounds.size.height / 6) : (bounds.size.height / 5)
         
         singlePixelLine(at: 0, in: rect, topBias: false)
         singlePixelLine(at: height * 1, in: rect, topBias: false)

@@ -32,7 +32,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         day = calendar.component(.day, from: date)
         strYearMonth = "\(year)\(makeTwoDigitString(month))"
         loadItems(strYearMonth)
-        print("\(year) \(month)")
+        print("\(year)년\(month)월 달력 생성")
         
         if month == 2 {
             daysInMonths[2] = (year%4 == 0 && year%100 != 0 || year%400 == 0) ? 29 : 28
@@ -44,9 +44,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         
         numberOfCells = firstDayPosition + daysInMonths[month]
         
-        //  numberOfCell 에 따른 선높이 바꿔 그려주기
-        calendarLineView.setNumberOfCells(numberOfCells)
-        calendarLineView.setNeedsDisplay()
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -58,7 +56,7 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
 
         let dayCounter = indexPath.row + 1 - firstDayPosition
         
-        cell.dayLabel.text = "\(dayCounter)"
+        cell.dayLabel.text = " \(dayCounter)"
         
         if dayCounter < 1 {
             cell.isHidden = true
@@ -67,18 +65,6 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
         if dayCounter == 1 {
             firstDayIndexPath = indexPath
         }
-        
-        if (year == toYear && month == toMonth && dayCounter == toDay) {
-            firstDayIndexPath = indexPath
-        }
-        
-        if dayCounter == day {
-            cell.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
-            preIndexPath = indexPath
-        }
-        
-        cell.unitOfWorkLabel.layer.cornerRadius = 9
-        cell.unitOfWorkLabel.layer.masksToBounds = true
         
         // 화면에 데이터 뿌려주기
         if indexPath.row >= firstDayPosition {
@@ -119,15 +105,30 @@ class CalendarViewController: UIViewController, UICollectionViewDataSource {
                     cell.memoLabel.text = monthlyItemArray[itemArrayIndex].memo
                 }
             }
+            
             switch indexPath.row {  // 주말 날짜색 설정
             case 0,7,14,21,28,35,42:
-                if Int(cell.dayLabel.text!)! > 0 {
+                if dayCounter > 0 {
                     cell.dayLabel.textColor = UIColor.red }
             case 6,13,20,27,34,41:
-                if Int(cell.dayLabel.text!)! > 0 {
+                if dayCounter > 0 {
                     cell.dayLabel.textColor = UIColor.blue }
             default: break
             }
+            
+            if (year == toYear && month == toMonth && dayCounter == toDay) {
+                firstDayIndexPath = indexPath
+                cell.dayLabel.backgroundColor = #colorLiteral(red: 1, green: 0.08361979167, blue: 0, alpha: 0.6451994243)
+                cell.dayLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            }
+            
+            if dayCounter == day {
+                cell.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
+                preIndexPath = indexPath
+            }
+            
+            cell.unitOfWorkLabel.layer.cornerRadius = 9
+            cell.unitOfWorkLabel.layer.masksToBounds = true
         }
         return cell
     }
@@ -160,6 +161,10 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout {
         
         var height = CGFloat()
         height = numberOfCells > 35 ? (collectionView.frame.height / 6) : (collectionView.frame.height / 5)
+        
+        //  셀 높이와 선높이 맞춰 그려주기
+        calendarLineView.setHeight(height)
+        calendarLineView.setNeedsDisplay()
         
         return CGSize(width: width, height: height)
     }

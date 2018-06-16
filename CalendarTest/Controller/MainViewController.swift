@@ -1,24 +1,36 @@
 import UIKit
 import GoogleMobileAds
 
-class MainViewController: UIViewController, UIPageViewControllerDataSource, GADBannerViewDelegate{
+class MainViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, GADBannerViewDelegate{
     
     @IBOutlet weak var mainYearMonthButton: UIButton!
     @IBOutlet weak var pageCalendarView: UIView!
-    @IBOutlet weak var memoLabel: UILabel!
     @IBOutlet weak var dashBoardCollectionView: UICollectionView!
+    @IBOutlet weak var bannerView: GADBannerView!
     
     var pageVC = UIPageViewController()
+    
     
     var selectedYear = Int()
     var selectedMonth = Int()
     var selectedDay = Int()
+    
+    var nextYear = Int()
+    var nextMonth = Int()
+    var nextDay = Int()
+    
     var strYearMonth = String()
     var itemArray = [Item]()
     
+    //  각자의 팝업컨트롤에 넘겨질 변수
     var memoTemp = ""
+    var payTemp = ""
     var unitOfWorkTemp = ""
+    
+    //  메인화면 하단 출력용 변수
     var strMonthlyUnitOfWrk = ""
+    var strDaylyPay = ""
+    var strMonthlySalaly = ""
     
 
     
@@ -29,7 +41,17 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         
         setDashBoard()
         
-        //  print(dataFilePath)
+        setAdMob()
+
+//          print(dataFilePath)
+    }
+    
+    func setAdMob() {
+        bannerView.adSize = kGADAdSizeBanner
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
+        bannerView.delegate = self
     }
     
     func makeCalendarMainScreen() {
@@ -39,6 +61,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         pageCalendarView.addSubview(pageVC.view)
         pageVC.didMove(toParentViewController: self)
         pageVC.dataSource = self
+        pageVC.delegate = self
         
         // 첫 pageViewController 화면 출력하기
         let firstViewController = createCalendarViewController(today)
@@ -48,9 +71,11 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         selectYearMonthDay(year: toYear, month: toMonth, day: toDay)
         strYearMonth = "\(toYear)\(makeTwoDigitString(toMonth))"
         
-        // 해당 총 월공수 출력
+        // 해당 월 공수 , 급여 , 단가 출력
         loadItems()
         displayMonthlyUnitOfWork()
+        displayDaylyPay()
+        displayMonthlySalaly()
 
     }
     
@@ -73,21 +98,41 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         return calendarVC
     }
     
+    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        let calendarVC = pendingViewControllers[0] as! CalendarViewController
+        let currentDate = calendarVC.date
+        nextYear = calendar.component(.year, from: currentDate)
+        nextMonth = calendar.component(.month, from: currentDate)
+        nextDay = (nextYear == toYear && nextMonth == toMonth) ? toDay : 1
+        print("\(nextYear)월 \(nextMonth)년 달력 방향 터치")
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        
+        let calendarVC = previousViewControllers[0] as! CalendarViewController
+        let currentDate = calendarVC.date
+        let year = calendar.component(.year, from: currentDate)
+        let month = calendar.component(.month, from: currentDate)
+        print("이전꺼는 \(year)월 \(month)년 달력")
+        
+        if month != nextMonth && completed {
+            mainYearMonthButton.setTitle("\(nextYear)년 \(nextMonth)월", for: .normal)
+            selectYearMonthDay(year: nextYear, month: nextMonth, day: nextDay)
+            strYearMonth = "\(selectedYear)\(makeTwoDigitString(selectedMonth))"
+            loadItems()
+            displayMonthlyUnitOfWork()
+            displayDaylyPay()
+            displayMonthlySalaly()
+        }
+    }
+    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         let calendarVC = viewController as! CalendarViewController
         let currentDate = calendarVC.date
         var year = calendar.component(.year, from: currentDate)
         var month = calendar.component(.month, from: currentDate)
-//        var day = calendar.component(.day, from: currentDate)
         calendarVC.calendarCollectionView.cellForItem(at: calendarVC.preIndexPath)?.backgroundColor = UIColor.clear
         calendarVC.calendarCollectionView.cellForItem(at: calendarVC.firstDayIndexPath)?.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
-        var day = (year == toYear && month == toMonth) ? toDay : 1
-        
-        mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
-        selectYearMonthDay(year: year, month: month, day: day)
-        strYearMonth = "\(year)\(makeTwoDigitString(month))"
-        loadItems()
-        displayMonthlyUnitOfWork()
         
         switch month {
         case 12:
@@ -96,7 +141,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         default:
             month += 1
         }
-        day = (year == toYear && month == toMonth) ? toDay : 1
+        let day = (year == toYear && month == toMonth) ? toDay : 1
         let newDate = createDate(year, month, day)
         return createCalendarViewController(newDate)
     }
@@ -106,16 +151,8 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         let currentDate = calendarVC.date
         var year = calendar.component(.year, from: currentDate)
         var month = calendar.component(.month, from: currentDate)
-//        var day = calendar.component(.day, from: currentDate)
         calendarVC.calendarCollectionView.cellForItem(at: calendarVC.preIndexPath)?.backgroundColor = UIColor.clear
         calendarVC.calendarCollectionView.cellForItem(at: calendarVC.firstDayIndexPath)?.backgroundColor = #colorLiteral(red: 0.9359605911, green: 0.9359605911, blue: 0.9359605911, alpha: 1)
-        var day = (year == toYear && month == toMonth) ? toDay : 1
-        
-        mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
-        selectYearMonthDay(year: year, month: month, day: day)
-        strYearMonth = "\(year)\(makeTwoDigitString(month))"
-        loadItems()
-        displayMonthlyUnitOfWork()
         
         switch month {
         case 1:
@@ -124,7 +161,7 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
         default:
             month -= 1
         }
-        day = (year == toYear && month == toMonth) ? toDay : 1
+        let day = (year == toYear && month == toMonth) ? toDay : 1
         let newDate = createDate(year, month, day)
         return createCalendarViewController(newDate)
     }
@@ -137,13 +174,23 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
             let popup = segue.destination as! UnitOfWorkPopUpViewController
             popup.delegate = self
             popup.strNumber = unitOfWorkTemp
+            popup.selectedMonth = selectedMonth
+            popup.selectedDay = selectedDay
         } else if segue.identifier == "toMemoPopUpViewControllerSegue" {
             let popup = segue.destination as! MemoPopUpViewController
             popup.delegate = self
             popup.memo = memoTemp
+            popup.selectedMonth = selectedMonth
+            popup.selectedDay = selectedDay
+        } else if segue.identifier == "toPayPopUpViewControllerSegue" {
+            let popup = segue.destination as! PayPopUpViewController
+            popup.delegate = self
+            popup.strNumber = payTemp
+            popup.selectedMonth = selectedMonth
         }
     }
     
+    //MARK:  - DashBoard 출력
     // 호출전에 해당 년월.plist 값이 itemArray에 load 되어 있어야 함
     func displayMonthlyUnitOfWork() {
         var monthlyUnitOfWork = Float()
@@ -157,7 +204,38 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
             if strMonthlyUnitOfWrk.hasSuffix(".") {
                 strMonthlyUnitOfWrk.removeLast() }
         }
-        memoLabel.text = strMonthlyUnitOfWrk
+        dashBoardCollectionView.reloadData()
+    }
+    
+    // 호출전에 해당 년월.plist 값이 itemArray에 load 되어 있어야 함
+    func displayMonthlySalaly() {
+        var monthlySalaly = Float()
+        for item in itemArray {
+            monthlySalaly += item.numUnitOfWork * item.pay
+        }
+        strMonthlySalaly = String(monthlySalaly)
+        if strMonthlySalaly.contains(".") {
+            while (strMonthlySalaly.hasSuffix("0")) {
+                strMonthlySalaly.removeLast() }
+            if strMonthlySalaly.hasSuffix(".") {
+                strMonthlySalaly.removeLast() }
+        }
+        dashBoardCollectionView.reloadData()
+    }
+    
+    // 호출전에 해당 년월.plist 값이 itemArray에 load 되어 있어야 함
+    func displayDaylyPay() {
+        var daylyPay = Float()
+        if !itemArray.isEmpty {
+            daylyPay = itemArray[selectedDay-1].pay
+        }
+        strDaylyPay = String(daylyPay)
+        if strDaylyPay.contains(".") {
+            while (strDaylyPay.hasSuffix("0")) {
+                strDaylyPay.removeLast() }
+            if strDaylyPay.hasSuffix(".") {
+                strDaylyPay.removeLast() }
+        }
         dashBoardCollectionView.reloadData()
     }
     
@@ -192,40 +270,34 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, GADB
     @IBAction func inputUnitOfWorkButtonAction(_ sender: Any) {
         loadItems()
         // 선택된 날짜 공수 입력화면에 출력
-        if !itemArray.isEmpty {
-            unitOfWorkTemp = String(itemArray[selectedDay-1].numUnitOfWork)
-            print(unitOfWorkTemp)
-        } else {
-            unitOfWorkTemp = "0"
-        }
+            unitOfWorkTemp = !itemArray.isEmpty ? String(itemArray[selectedDay-1].numUnitOfWork) : "0"
     }
     
     @IBAction func inputMemoButtonAction(_ sender: Any) {
         loadItems()
         // 선택된 날짜의 메모 입력화면에 출력
-        
         memoTemp = !itemArray.isEmpty ? itemArray[selectedDay-1].memo : ""
-        
-//        if !itemArray.isEmpty {
-//            memoTemp = itemArray[selectedDay-1].memo
-//            print(memoTemp)
-//        } else {
-//            memoTemp = ""
-//        }
     }
+    
+    @IBAction func inputPayButtonAction(_ sender: Any) {
+        loadItems()
+        //  선택된 달(날짜)의 단가를 입력화면에 출력
+        payTemp = !itemArray.isEmpty ? String(itemArray[selectedDay-1].pay) : "0"
+    }
+    
 }
 
 extension MainViewController: PopupDelegate {
     
     func saveMemo(memo: String) {
         let newItem = Item()
-//        loadItems()
-        if itemArray.isEmpty {
-            makeItemArray() }
+        //loadItems()
+        if itemArray.isEmpty {makeItemArray() }
         
         newItem.memo = memo
         newItem.strUnitOfWork = itemArray[selectedDay-1].strUnitOfWork
         newItem.numUnitOfWork = itemArray[selectedDay-1].numUnitOfWork
+        newItem.pay = itemArray[selectedDay-1].pay
         
         itemArray.remove(at: selectedDay-1)
         itemArray.insert(newItem, at: selectedDay-1)
@@ -238,13 +310,22 @@ extension MainViewController: PopupDelegate {
         moveYearMonth(year: selectedYear, month: selectedMonth, day: selectedDay)
     }
     
+    func savePay(pay: String) {
+        //loadItems()
+        if itemArray.isEmpty {makeItemArray()}
+        payTemp = pay
+        for item in itemArray {
+            item.pay = Float(payTemp)!
+        }
+        saveItems()
+        displayDaylyPay()
+        displayMonthlySalaly()
+    }
     
     func saveUnitOfWork(unitOfWork: String) {
         let newItem = Item()
-//        loadItems()
-        if itemArray.isEmpty {
-            makeItemArray()
-        }
+      //loadItems()
+        if itemArray.isEmpty {makeItemArray()}
         unitOfWorkTemp = unitOfWork
         
         if unitOfWorkTemp.contains(".") {
@@ -267,6 +348,7 @@ extension MainViewController: PopupDelegate {
         }
         
         newItem.memo = itemArray[selectedDay-1].memo
+        newItem.pay = itemArray[selectedDay-1].pay
 
         itemArray.remove(at: selectedDay-1)
         itemArray.insert(newItem, at: selectedDay-1)
@@ -279,6 +361,7 @@ extension MainViewController: PopupDelegate {
         moveYearMonth(year: selectedYear, month: selectedMonth, day: selectedDay)
         
         displayMonthlyUnitOfWork()
+        displayMonthlySalaly()
 
     }
     
@@ -297,9 +380,10 @@ extension MainViewController: PopupDelegate {
         mainYearMonthButton.setTitle("\(year)년 \(month)월", for: .normal)
         selectYearMonthDay(year: year, month: month, day: day)
         strYearMonth = "\(year)\(makeTwoDigitString(month))"
-        
         loadItems()
         displayMonthlyUnitOfWork()
+        displayDaylyPay()
+        displayMonthlySalaly()
     }
 }
 
@@ -337,7 +421,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
             
         case 0:
             cell.contentLabel.textAlignment = .center
-            cell.contentLabel.text = "\(strMonthlyUnitOfWrk)"
+            cell.contentLabel.text = strMonthlyUnitOfWrk
             cell.descriptionLabel.text = "\(selectedMonth)월 공수"
             cell.unitLabel.text = "공수"
             cell.backView.backgroundColor = #colorLiteral(red: 0, green: 0.7568627451, blue: 0.8431372549, alpha: 1)
@@ -345,33 +429,26 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
             cell.iconImgView.image = #imageLiteral(resourceName: "ic_schedule")
             
         case 1:
-            cell.contentLabel.text = "3,800,000"
+            cell.contentLabel.text = strMonthlySalaly
             cell.descriptionLabel.text = "\(selectedMonth)월 예상 급여"
-            cell.unitLabel.text = "원"
+            cell.unitLabel.text = "만원"
             cell.backView.backgroundColor = #colorLiteral(red: 0.9882352941, green: 0, blue: 0.3490196078, alpha: 1)
             cell.imgBackView.backgroundColor = #colorLiteral(red: 0.8705882353, green: 0, blue: 0.3098039216, alpha: 1)
             cell.iconImgView.image = #imageLiteral(resourceName: "ic_wallet")
             
         case 2:
-            cell.contentLabel.text = "180,000"
+            cell.contentLabel.text = strDaylyPay
             cell.descriptionLabel.text = "\(selectedMonth)월 단가"
-            cell.unitLabel.text = "원"
+            cell.unitLabel.text = "만원"
             cell.backView.backgroundColor = #colorLiteral(red: 0.4588235294, green: 0.8039215686, blue: 0.2745098039, alpha: 1)
             cell.imgBackView.backgroundColor = #colorLiteral(red: 0.4039215686, green: 0.7019607843, blue: 0.2431372549, alpha: 1)
             cell.iconImgView.image = #imageLiteral(resourceName: "ic_money")
             
         default:
-            cell.descriptionLabel.text = "메모"
-            cell.unitLabel.text = ""
-            cell.descriptionLabel.text = ""
-            cell.backView.backgroundColor = #colorLiteral(red: 0.4588235294, green: 0, blue: 0.7254901961, alpha: 1)
-            cell.imgBackView.backgroundColor = #colorLiteral(red: 0.368627451, green: 0, blue: 0.6666666667, alpha: 1)
-            cell.iconImgView.image = #imageLiteral(resourceName: "ic_border_memo")
+            break
         }
-        
         return cell
     }
-    
     
 }
 

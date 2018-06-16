@@ -1,12 +1,12 @@
 
 import UIKit
-import GoogleMobileAds
 
-class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
+class PayPopUpViewController: UIViewController {
 
     @IBOutlet weak var displayBackView: UIView!
     @IBOutlet weak var displayNumberLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var topIcon: UIView!
     @IBOutlet weak var descriptionLabel: UILabel!
     
     @IBOutlet weak var n1Button: UIButton!
@@ -22,31 +22,18 @@ class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
     @IBOutlet weak var dotButton: UIButton!
     @IBOutlet weak var backSpaceButton: UIButton!
     
-    @IBOutlet weak var bannerView: GADBannerView!
-    
     var delegate: PopupDelegate?
     
     var selectedMonth = Int()
-    var selectedDay = Int()
     var strNumber = String()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         refineStrNumber()
-        
+
         setShadow()
         
-        setAdMob()
-    }
-    
-    func setAdMob() {
-        bannerView.adSize = kGADAdSizeBanner
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        bannerView.rootViewController = self
-        bannerView.load(GADRequest())
-        bannerView.delegate = self
     }
     
     func refineStrNumber() {
@@ -58,7 +45,7 @@ class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
         }
         strNumber = strNumber == "" ? "0" : strNumber
         numberDisplay()
-        descriptionLabel.text = "\(selectedMonth)월 \(selectedDay)일 공수"
+        descriptionLabel.text = "\(selectedMonth)월 단가"
     }
     
     func numberDisplay() {
@@ -97,16 +84,25 @@ class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
     }
     
     
-    @IBAction func saveUnitOfWorkButtonAction(_ sender: UIButton) {
-        delegate?.saveUnitOfWork(unitOfWork: displayNumberLabel.text!)
+//    @IBAction func saveUnitOfWorkButtonAction(_ sender: UIButton) {
+//        delegate?.saveUnitOfWork(unitOfWork: displayNumberLabel.text!)
+//        dismiss(animated: true, completion: nil)
+//    }
+
+    @IBAction func savePayButtonAction(_ sender: Any) {
+        delegate?.savePay(pay: displayNumberLabel.text!)
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func backgroundButtonAction(_ sender: UIButton) {
+    @IBAction func backgroundButtonAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
     func setShadow() {
+        
+        topIcon.layer.cornerRadius = 30
+        topIcon.layer.masksToBounds = true
+        
         displayBackView.layer.cornerRadius = 10
         displayBackView.layer.masksToBounds = true
         
@@ -172,27 +168,6 @@ class UnitOfWorkPopUpViewController: UIViewController, GADBannerViewDelegate {
         n0Button.layer.shadowOffset = CGSize(width: 0, height: shadowHeight)
         n0Button.layer.shadowOpacity = shadowOpacity
         n0Button.layer.shadowRadius = shadowRadius
-        
-//        dotButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: shadowAlpha).cgColor
-//        dotButton.layer.shadowOffset = CGSize(width: 0, height: shadowHeight)
-//        dotButton.layer.shadowOpacity = shadowOpacity
-//        dotButton.layer.shadowRadius = shadowRadius
-//
-//        backSpaceButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: shadowAlpha).cgColor
-//        backSpaceButton.layer.shadowOffset = CGSize(width: 0, height: shadowHeight)
-//        backSpaceButton.layer.shadowOpacity = shadowOpacity
-//        backSpaceButton.layer.shadowRadius = shadowRadius
-        
-        //        n1Button.layer.masksToBounds = false
-        //        n2Button.layer.masksToBounds = true
-        //        n3Button.layer.masksToBounds = true
-        //        n4Button.layer.masksToBounds = true
-        //        n5Button.layer.masksToBounds = true
-        //        n6Button.layer.masksToBounds = true
-        //        n7Button.layer.masksToBounds = true
-        //        n8Button.layer.masksToBounds = true
-        //        n9Button.layer.masksToBounds = true
-        //        n0Button.layer.masksToBounds = true
         
         var numberButtonCornerRadius = CGFloat()
         numberButtonCornerRadius = 5
