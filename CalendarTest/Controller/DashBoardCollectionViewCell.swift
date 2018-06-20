@@ -3,7 +3,6 @@ import UIKit
 
 class DashBoardCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var backView: UIView!
     @IBOutlet weak var imgBackView: UIView!
     @IBOutlet weak var iconImgView: UIImageView!

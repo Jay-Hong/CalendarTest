@@ -83,12 +83,6 @@ class PayPopUpViewController: UIViewController {
         numberDisplay()
     }
     
-    
-//    @IBAction func saveUnitOfWorkButtonAction(_ sender: UIButton) {
-//        delegate?.saveUnitOfWork(unitOfWork: displayNumberLabel.text!)
-//        dismiss(animated: true, completion: nil)
-//    }
-
     @IBAction func savePayButtonAction(_ sender: Any) {
         delegate?.savePay(pay: displayNumberLabel.text!)
         dismiss(animated: true, completion: nil)

@@ -32,8 +32,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     var strDaylyPay = ""
     var strMonthlySalaly = ""
     
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -76,7 +74,6 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         displayMonthlyUnitOfWork()
         displayDaylyPay()
         displayMonthlySalaly()
-
     }
     
     func createDate (_ year: Int, _ month: Int, _ day: Int) -> Date {
