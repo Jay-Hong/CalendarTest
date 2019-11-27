@@ -55,9 +55,9 @@ class MainViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     func makeCalendarMainScreen() {
         pageVC = self.storyboard?.instantiateViewController(withIdentifier: "pageViewController") as! UIPageViewController
         pageVC.view.frame = pageCalendarView.bounds
-        addChildViewController(pageVC)
+        addChild(pageVC)
         pageCalendarView.addSubview(pageVC.view)
-        pageVC.didMove(toParentViewController: self)
+        pageVC.didMove(toParent: self)
         pageVC.dataSource = self
         pageVC.delegate = self
         

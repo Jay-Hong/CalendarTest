@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -173,6 +173,7 @@
 				695981352084A4F000727DC7 /* Sources */,
 				695981362084A4F000727DC7 /* Frameworks */,
 				695981372084A4F000727DC7 /* Resources */,
+				4EDB017A30B744DF5B98F870 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -195,6 +196,7 @@
 				TargetAttributes = {
 					695981382084A4F000727DC7 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1120;
 					};
 				};
 			};
@@ -231,6 +233,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4EDB017A30B744DF5B98F870 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CalendarTest/Pods-CalendarTest-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CalendarTest/Pods-CalendarTest-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CalendarTest/Pods-CalendarTest-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		883EC82D80C015217B167DDC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -424,7 +443,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Jay.CalendarTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -443,7 +462,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Jay.CalendarTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
